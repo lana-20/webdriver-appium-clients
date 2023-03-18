@@ -1,8 +1,8 @@
-# WebDriver and Appium clients
+# WebDriver and Appium Clients
 
 *In any client-server architecture, the client is an important component. Let's discuss WebDriver clients, which are the libraries used in test scripts to enable Selenium and Appium automation.*
 
-How does a Selenium or Appium client work? How do Selenium or Appium themselves work? Let's first talk about how the clients work.
+How does a Selenium or Appium *client* work? How do Selenium or Appium themselves work? Let's first talk about how the clients work.
 
 ### WebDriver Client Libraries
  - WebDriver client == anything that can send WebDriver-appropriate HTTP requests
@@ -47,24 +47,37 @@ Again, what's going on here is that we're constructing the appropriate request w
 
     element = session.find_element_by_css_selector('#submitForm')
 
-That's it, just one line. In this Python code example, we assume we already have an object named session, the same way we assumed it in the HTTP example a moment ago as well. And then what we're doing is calling a method on this object, named find_element_by_css_selector. That's a pretty transparent name, right? Then we pass in a parameter which is exactly the same as the 'value' parameter in the HTTP example.
+That's it, just one line. In this Python code example, we assume we already have an object named <code>session</code>, the same way we assumed it in the HTTP example a moment ago as well. And then what we're doing is calling a method on this object, named <code>find_element_by_css_selector</code>. That's a pretty transparent name, right? Then we pass in a parameter which is exactly the same as the 'value' parameter in the HTTP example.
 
-What do we get back from the call to this method? Well, we get back an object which we can name whatever we like. Rather than a strange and obscure JSON string, the Python client library takes the element ID and wraps it up in an object, which we can then conveniently call methods on!
+What do we get back from the call to this method? Well, we get back an object which we can name whatever we like. Rather than a strange and obscure JSON string, the Python client library takes the element ID and wraps it up in an object, which we can then conveniently call methods on.
+
+<img width="800" src="https://user-images.githubusercontent.com/70295997/226081290-7e402ac6-3ddd-4bdb-a214-9a043b9b20a9.png">
 
     element.click()
     element.send_keys('hello world')
 
-For example, we could call element.click to click the element we previously found. And we could call element.send_keys with some text in order to send keystrokes into an element. But what happened to the element ID? Why don't we need to include it or the session ID in these commands? The magic is that we are including them in the HTTP requests to interact with the element. But we as the users of the client library no longer need to worry about that. The client library abstracts those things away and stores them on the objects themselves, so that we don't have to worry our minds about them.
+For example, we could call <code>element.click</code> to click the element we previously found. And we could call <code>element.send_keys</code> with some text in order to send keystrokes into an element. But what happened to the element ID? Why don't we need to include it or the session ID in these commands? The magic is that we are including them in the HTTP requests to interact with the element. But we as the users of the client library no longer need to worry about that. The client library abstracts those things away and stores them on the objects themselves, so that we don't have to worry our minds about them.
 
-This is what's beautiful about client libraries--they essentially create an interface for using Appium and Selenium which is totally natural for the programming language that they're written for. And this means that the Python client library might look totally different than the Java client library. In fact, we want this to be the case, because Python and Java are totally different languages with totally different conventions about what makes a good library! The same series of steps in the Java client might look like this, for example:
+This is what's beautiful about client libraries - they essentially create an interface for using Appium and Selenium which is totally natural for the programming language that they're written for. And this means that the Python client library might look totally different than the Java client library. In fact, we want this to be the case, because Python and Java are totally different languages with totally different conventions about what makes a good library. The same series of steps in the Java client might look like this, for example:
+
+### Java Client Library Example
+
+<img width="800" src="https://user-images.githubusercontent.com/70295997/226081372-749a2cf1-ac0a-4fc9-8c06-a8793bac94ab.png">
 
     WebElement element = session.findElement(By.cssSelector("#submitForm"));
     element.click();
     element.sendKeys("hello world");
 
-Similar enough to see that we are still working with webdriver, but different enough to be natural for Java!
+Similar enough to see that we are still working with webdriver, but different enough to be natural and appropriate for Java.
 
-Thankfully, all the clients libraries you'll ever need have already been written, so you don't have to do the hard work of designing a library that constructs the HTTP requests, and parses the HTTP responses, appropriate for the WebDriver protocol. But, maybe you'll have some ideas for a better library and design one anyway! At this point, you at least know how they all work under the hood. There's no magic--just code that is translated to HTTP requests, and responses which are translated from HTTP back into code objects.
+Thankfully, all the clients libraries you'll ever need have already been written, so you don't have to do the hard work of designing a library that constructs the HTTP requests, and parses the HTTP responses, appropriate for the WebDriver protocol. But, maybe you'll have some ideas for a better library and design one anyway. At this point, you at least know how they all work under the hood. There's no magic - just code that is translated to HTTP requests, and responses which are translated from HTTP back into code objects.
+
+### Appium Client Libraries
+
+- Standard WebDriver clients will also work with Appium
+- Standard WebDriver clients will *not* know about any of the Appium's protocol extensions
+- Appium client libraries exist in every major language to support the extensions
+- Appium client libraries are *also* Selenium client libraries - you don't need to use both
 
 One more note about client libraries! Remember when we talked about how Appium had to extend the WebDriver protocol with new commands? Well, that has some consequences for client libraries and how we use them. If you want, you can take a client library written for vanilla WebDriver, produced by the Selenium team, and use it with Appium. You'll be able to start and stop sessions, find elements, tap on them, and so on. But, you won't have access to any of the commands that Appium has defined as extensions to the protocol. This is because the standard client libraries for Selenium don't know or care about Appium's extensions.
 
